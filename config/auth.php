@@ -4,6 +4,11 @@
  * PHP Native
  */
 
+// Aktifkan Output Buffering agar header() redirect selalu aman tanpa error 'headers already sent'
+if (!ob_get_level()) {
+    ob_start();
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

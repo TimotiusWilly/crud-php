@@ -3,8 +3,11 @@
  * Edit Data Stok Akun & Modal
  * PHP Native
  */
-$pageTitle = 'Edit Stok & Modal Akun';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/includes/flash.php';
+
+require_login();
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) {
@@ -63,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 mysqli_query($conn, "UPDATE penjualan SET modal_terjual = $modalTerjualBaru, laba_bersih = $labaBaru WHERE id = " . $p['id']);
             }
 
-            set_flash('success', "Stok '$namaAkun' berhasil diperbarui!");
+            set_flash('success', "Stok '$namaAkun' berhasil diperbarui.");
             header("Location: index.php");
             exit;
         } else {
@@ -72,21 +75,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mysqli_stmt_close($upd);
     }
 }
+
+$pageTitle = 'Edit Stok & Modal Akun';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div style="max-width: 700px; margin: 0 auto;">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">
-                <span>✏️ Edit Modal & Stok Akun</span>
-            </h3>
+<div style="max-width: 650px; margin: 0 auto;">
+    <div class="table-section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">Edit Modal & Stok Akun</h3>
             <a href="index.php" class="btn btn-outline btn-sm">&larr; Kembali</a>
         </div>
-        <div class="card-body">
+        <div>
             <?php if (!empty($errors)): ?>
                 <div class="alert alert-danger">
                     <div class="alert-content">
-                        <span>⚠️</span>
                         <div>
                             <ul style="margin-left: 18px;">
                                 <?php foreach ($errors as $e): ?>
@@ -142,8 +145,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div style="margin-top: 24px; display: flex; gap: 10px; justify-content: flex-end;">
                     <a href="index.php" class="btn btn-outline">Batal</a>
-                    <button type="submit" class="btn btn-primary">
-                        <span>💾 Simpan Perubahan</span>
+                    <button type="submit" class="btn btn-dark">
+                        Simpan Perubahan
                     </button>
                 </div>
             </form>

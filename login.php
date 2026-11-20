@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="login-body">
     <div class="login-card">
         <div class="login-header">
-            <div class="login-logo">🎮</div>
+            <div class="login-logo" style="background-color: var(--logo-cream); color: var(--logo-cream-text);">GS</div>
             <h1 class="login-title">GameStock Pro</h1>
             <p class="login-subtitle">Sistem Manajemen Stok & Laba Jual Beli Akun Game</p>
         </div>
@@ -68,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger" style="margin-bottom: 20px;">
                 <div class="alert-content">
-                    <span>⚠️</span>
                     <span><?= clean($error); ?></span>
                 </div>
             </div>
@@ -88,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div style="margin-top: 24px;">
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                <button type="submit" class="btn btn-dark" style="width: 100%; padding: 12px; border-radius: var(--radius-pill); font-size: 0.95rem;">
                     Masuk ke Sistem
                 </button>
             </div>

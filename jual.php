@@ -3,8 +3,11 @@
  * Form Jual Stok Akun & Kalkulasi Laba (Simple & Cepat)
  * PHP Native
  */
-$pageTitle = 'Catat Penjualan Akun';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/includes/flash.php';
+
+require_login();
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) {
@@ -67,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             mysqli_commit($conn);
 
-            set_flash('success', "Penjualan berhasil dicatat! Laba bersih: " . format_rupiah($labaBersih) . " (Sisa stok: {$sisaBaru} akun).");
+            set_flash('success', "Penjualan berhasil dicatat. Laba bersih: " . format_rupiah($labaBersih) . " (Sisa stok: {$sisaBaru} akun).");
             header("Location: penjualan.php");
             exit;
         } catch (Exception $e) {
@@ -76,36 +79,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$pageTitle = 'Catat Penjualan Akun';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div style="max-width: 650px; margin: 0 auto;">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">
-                <span>💰 Catat Penjualan Akun</span>
-            </h3>
+    <div class="table-section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">Catat Penjualan Akun</h3>
             <a href="index.php" class="btn btn-outline btn-sm">&larr; Kembali</a>
         </div>
-        <div class="card-body">
+        <div>
             <!-- INFO RINGKAS STOK -->
-            <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="background: var(--pastel-blue-bg); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <div>
-                    <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Akun yang Dijual:</span>
-                    <strong style="font-size: 1.1rem; color: var(--text-main);"><?= clean($stok['nama_akun']); ?></strong>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary); display: block;">Akun yang Dijual:</span>
+                    <strong style="font-size: 1.1rem; color: var(--text-primary);"><?= clean($stok['nama_akun']); ?></strong>
                 </div>
                 <div style="text-align: right;">
-                    <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">Modal / Akun:</span>
-                    <strong style="font-size: 1.1rem; color: var(--primary);" id="valModalPerAkun" data-modal="<?= $modalPerAkun; ?>">
+                    <span style="font-size: 0.8rem; color: var(--text-secondary); display: block;">Modal / Akun:</span>
+                    <strong style="font-size: 1.1rem; color: var(--text-primary);" id="valModalPerAkun" data-modal="<?= $modalPerAkun; ?>">
                         <?= format_rupiah($modalPerAkun); ?>
                     </strong>
-                    <small style="color: var(--success-text); display: block; font-weight: 600;">Sisa Stok: <?= $stok['sisa_stok']; ?> akun</small>
+                    <small style="color: var(--pastel-green-text); display: block; font-weight: 700;">Sisa Stok: <?= $stok['sisa_stok']; ?> akun</small>
                 </div>
             </div>
 
             <?php if (!empty($errors)): ?>
                 <div class="alert alert-danger">
                     <div class="alert-content">
-                        <span>⚠️</span>
                         <div>
                             <ul style="margin-left: 18px;">
                                 <?php foreach ($errors as $e): ?>
@@ -149,13 +152,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- LIVE KALKULATOR LABA BERSIH -->
                 <div class="profit-preview-card" style="margin-top: 16px; margin-bottom: 20px;">
                     <div class="profit-preview-title">
-                        <span>📊 Live Hitung Laba Bersih</span>
+                        <span>Perhitungan Laba Bersih</span>
                     </div>
 
                     <div class="profit-preview-grid">
                         <div class="profit-item">
                             <span class="profit-item-label">Modal Terpakai</span>
-                            <span class="profit-item-value" id="calcModalTerpakai" style="color: #cbd5e1;"><?= format_rupiah($modalPerAkun); ?></span>
+                            <span class="profit-item-value" id="calcModalTerpakai" style="color: var(--text-main);"><?= format_rupiah($modalPerAkun); ?></span>
                         </div>
 
                         <div class="profit-item">
@@ -168,13 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label for="catatan" class="form-label">Catatan Pembeli / Transaksi (Opsional)</label>
                     <input type="text" name="catatan" id="catatan" class="form-control" 
-                           placeholder="Contoh: Laku ke Dimas via WA / Transfer BCA">
+                           placeholder="Contoh: Pembeli via WA / Transfer BCA">
                 </div>
 
                 <div style="margin-top: 24px; display: flex; gap: 10px; justify-content: flex-end;">
                     <a href="index.php" class="btn btn-outline">Batal</a>
-                    <button type="submit" class="btn btn-success">
-                        <span>💰 Simpan Penjualan & Laba</span>
+                    <button type="submit" class="btn btn-dark">
+                        Simpan Penjualan
                     </button>
                 </div>
             </form>
